@@ -1,0 +1,22 @@
+{#
+mailing_list/publications.html
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Plain-text body for the email used to notify new publications.
+
+:copyright: (c) 2020 Paolo Paolo Bernardi.
+:license: GNU AGPL version 3, see LICENSE for more details.
+#}
+{{ title }}
+{% for pub in publications %}
+Pubblicato da: {{ pub.publisher }}
+Oggetto: {{ pub.subject }}
+{% if pub.url %}URL: {{ pub.url }}{% endif %}
+{% if pub.date_start and pub.date_end %}Data pubblicazione: dal {{ pub.date_start }} al {{ pub.date_end }}{% elif pub.date_start %}Data pubblicazione: {{ pub.date_start }}{% endif %}
+{% if pub.attachments %}
+Allegati:
+{% for att in pub.attachments %}
+   {{ att.name.strip() }}: {{ att.url }}
+{% endfor %}
+{% endif %}
+{% endfor %}
