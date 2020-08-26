@@ -17,7 +17,8 @@
 
 ## What is PBOTS
 
-PBOTS is a collection of web scrapers and a mailing system to notify updates of online bulletin boards.
+PBOTS is a collection of web scrapers and a mailing system to notify updates 
+of online bulletin boards.
 
 So far, PBOTS provides scrapers for the following bulletin boards:
 
@@ -31,23 +32,28 @@ So far, PBOTS provides scrapers for the following bulletin boards:
   
 ### Setup
 
-You might want to add some rows to your crontab to run the PBOTS scrapers periodically. For example:
+Before running PBOTS you will need to create a `settings.py` file in the root
+directory of the project. You should create it by copying `settings.py-sample`
+and modifying its content as per your needs.
+
+Furthermore, you might want to add some rows to your crontab to run the PBOTS 
+scrapers periodically. For example:
 
 ```
 # Albo Pretorio del Comune di Acquasparta
-0 16 * * * /home/rnd/anaconda3/bin/python /home/rnd/github/pbots/run.sh 1
+0 16 * * * /home/rnd/github/pbots/run.sh 1
 # Albo Pretorio del Comune di Montecastrilli
-0 10 * * * /home/rnd/anaconda3/bin/python /home/rnd/github/pbots/run.sh 2
+0 10 * * * /home/rnd/github/pbots/run.sh 2
 # Bollettino della Regione Umbria, serie generale
-0 12 * * * /home/rnd/anaconda3/bin/python /home/rnd/github/pbots/run.sh 3
+0 12 * * * /home/rnd/github/pbots/run.sh 3
 # Bollettino della Regione Umbria, serie avvisi e concorsi
-15 12 * * * /home/rnd/anaconda3/bin/python /home/rnd/github/pbots/run.sh 4
+15 12 * * * /home/rnd/github/pbots/run.sh 4
 # Bollettino della Regione Umbria, serie informazioni e comunicazione
-30 12 * * * /home/rnd/anaconda3/bin/python /home/rnd/github/pbots/run.sh 5
+30 12 * * * /home/rnd/github/pbots/run.sh 5
 # Albo Pretorio dell'I. C. "A. De Filis", Terni
-30 16 * * * /home/rnd/anaconda3/bin/python /home/rnd/github/pbots/run.sh 6
+30 16 * * * /home/rnd/github/pbots/run.sh 6
 # Matrimoni del comune di Montecastrilli
-30 10 * * * /home/rnd/anaconda3/bin/python /home/rnd/github/pbots/run.sh 7
+30 10 * * * /home/rnd/github/pbots/run.sh 7
 ```
 
 # License
