@@ -132,9 +132,9 @@ def ensure_db():
             """
         )
         cur.executemany(
-            """
+            f"""
             INSERT INTO pbots_mailinglistmember (name, email, source_id)
-            VALUES ('Paolo Bernardi', 'paolo@bernardi.cloud', :id);
+            VALUES ('{settings.DEFAULT_SUBSCRIBER_NAME}', '{settings.DEFAULT_SUBSCRIBER_EMAIL}', :id);
             """,
             SOURCES,
         )

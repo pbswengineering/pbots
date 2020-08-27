@@ -7,3 +7,5 @@ EMAIL_HOST_PASSWORD = "myverysecurepassword"
 EMAIL_PORT = 587
 EMAIL_FROM = "somerandomemail@gmail.com"
 EMAIL_REPLY_TO = ["someoneelse@gmail.com"]
+DEFAULT_SUBSCRIBER_NAME = "Piero Brandola"
+DEFAULT_SUBSCRIBER_EMAIL = "piero@brandola.com"
