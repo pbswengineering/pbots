@@ -15,6 +15,8 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import json
+import logging
+import logging.handlers as handlers
 import os
 import shlex
 import smtplib
@@ -28,43 +30,75 @@ import jinja2
 
 import settings
 
+
 SOURCES = [
     {
         "id": 1,
         "name": "Albo Pretorio del Comune di Acquasparta",
+        "varname": "albo_pretorio_acquasparta",
         "scraper": f"{settings.CASPERJS} scraper/albopretorio-comune-acquasparta.js",
     },
     {
         "id": 2,
         "name": "Albo Pretorio del Comune di Montecastrilli",
+        "varname": "albo_pretorio_montecastrilli",
         "scraper": "python scraper/albopretorio-comune-montecastrilli.py",
     },
     {
         "id": 3,
         "name": "Bollettino della Regione Umbria, serie generale",
+        "varname": "bollettino_umbria_generale",
         "scraper": f"{settings.PHANTOMJS} scraper/bollettino-regione-umbria.js 1",
     },
     {
         "id": 4,
         "name": "Bollettino della Regione Umbria, serie avvisi e concorsi",
+        "varname": "bollettino_umbria_concorsi",
         "scraper": f"{settings.PHANTOMJS} scraper/bollettino-regione-umbria.js 2",
     },
     {
         "id": 5,
         "name": "Bollettino della Regione Umbria, serie informazioni e comunicazione",
+        "varname": "bollettino_umbria_comunicazione",
         "scraper": f"{settings.PHANTOMJS} scraper/bollettino-regione-umbria.js 3",
     },
     {
         "id": 6,
         "name": "Albo Pretorio dell''I. C. \"A. De Filis\", Terni",
+        "varname": "albo_pretorio_de_filis",
         "scraper": f"{settings.CASPERJS} scraper/albopretorio-ic-defilis.js",
     },
     {
         "id": 7,
         "name": "Matrimoni del Comune di Montecastrilli",
+        "varname": "matrimoni_montecastrilli",
         "scraper": "python scraper/matrimoni-comune-montecastrilli.py",
     },
 ]
+
+
+def create_logger(name: str) -> logging.Logger:
+    """
+    Create a rotating logger.
+    """
+    if not os.path.exists("logs"):
+        os.mkdir("logs")
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO)  # Set to debug to view the output of the scrapers
+    formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
+    logHandler = handlers.RotatingFileHandler(
+        f"logs/{name}.log", maxBytes=2 ** 20, backupCount=4,
+    )
+    logHandler.setLevel(logging.INFO)
+    logHandler.setFormatter(formatter)
+    logger.addHandler(logHandler)
+    return logger
+
+
+# Create the main logger and source-specific loggers
+loggers = {0: create_logger("main")}
+for source in SOURCES:
+    loggers[source["id"]] = create_logger(source["varname"])  # type: ignore
 
 
 def show_help():
@@ -83,6 +117,8 @@ def ensure_db():
     tables and initial data.
     """
     if not os.path.exists("pbots.db"):
+        logger = loggers[0]
+        logger.info("pbots.db not found, creating default database...")
         conn = sqlite3.connect("pbots.db")
         cur = conn.cursor()
         cur.execute(
@@ -234,12 +270,15 @@ def send_newsletter(source_id: int, title: str):
     Send the newsletter for the specified source id.
     The newsletter will contain every new publication after pbots_source.last_pub_id.
     """
+    logger = loggers[source_id]
     conn = sqlite3.connect("pbots.db")
     cur = conn.cursor()
     # Verify whether there are publications to be sent
     publications = get_new_publications(cur, source_id)
     if not publications:
+        logger.info("There are no new publications, nothing to do.")
         return
+    logger.info(f"{len(publications)} new publications found.")
     # Prepare the email body
     context = {
         "title": title,
@@ -275,10 +314,12 @@ def send_newsletter(source_id: int, title: str):
         message.attach(logo_mime)
         message.attach(MIMEText(body_html, "html"))
         for rec in recipients:
+            logger.info(f"Sending {title} to {rec['name']} <{rec['email']}>...")
             message["To"] = f"{rec['name']} <{rec['email']}>"
             server.sendmail(settings.EMAIL_FROM, rec["email"], message.as_string())
     # Keep track of the publications that were just sent
     last_pub_id = max(pub["id"] for pub in publications)
+    logger.info(f"Updating last publication ID to {last_pub_id}")
     cur.execute(
         """
         UPDATE pbots_source
@@ -316,23 +357,32 @@ def run_source(source_id: int):
     """
     Run the scraping and mailing processes for the specified source.
     """
+    logger = loggers[source_id]
     source = next(s for s in SOURCES if s["id"] == source_id)  # type: Dict[str, Any]
+    logger.info(f"Running scraper for {source_id}: {source['varname']}...")
     scraper = source["scraper"]
     process = subprocess.Popen(
         shlex.split(scraper), stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
     output_bytes, err_bytes = process.communicate()
     exit_code = process.wait()
+    logger.info(f"Exit code: {exit_code}")
     output = output_bytes.decode("utf-8")
     err = err_bytes.decode("utf-8")
     if exit_code != 0:
+        logger.error(f"Error while running scraper for source {source_id}")
         print(f"Error while running scraper for source {source_id}")
-        print(f"\n\n{output}\n\n{err}\n\n")
+        print(f"\n\nSTDOUT: {output}\n\nSTDERR: {err}\n\n")
+    else:
+        logger.debug(f"STDOUT: {output}\n\nSTDERR: {err}")
     # This is ugly, I should address the actual underlying problems...
     output = output[output.find("[") : output.rfind("]") + 1]
     pubs = parse_json_pubs(output)
+    logger.info("Storing publications in the DB...")
     insert_publications(source_id, pubs)
+    logger.info("Sending emails...")
     send_newsletter(source_id, source["name"])
+    logger.info("Done.")
 
 
 if __name__ == "__main__":
@@ -344,5 +394,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         show_help()
         sys.exit(1)
-    source = int(sys.argv[1])
-    run_source(source)
+    source_id = int(sys.argv[1])
+    logger = loggers[0]
+    logger.info(f"Running source {source_id}")
+    run_source(source_id)
