@@ -399,4 +399,8 @@ if __name__ == "__main__":
     source_id = int(sys.argv[1])
     logger = loggers[0]
     logger.info(f"Running source {source_id}")
-    run_source(source_id)
+    try:
+        run_source(source_id)
+    except:  # noqa
+        logger.error("Uncaught error, see the source-specific log for for details")
+        loggers[source_id].error("Uncaught error", exc_info=True)
