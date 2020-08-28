@@ -182,20 +182,22 @@ def publication_exists(cur: sqlite3.Cursor, pub: Dict[str, Any]):
     """
     Check whether the specified publication is already in the database.
     """
-    cur.execute(
-        """
-        SELECT * FROM pbots_publication
-        WHERE url = :url
-        AND number = :number
-        AND publisher = :publisher
-        AND pub_type = :pub_type
-        AND subject = :subject
-        AND date_start = :date_start
-        AND date_end = :date_end
-        AND source_id = :source_id
-        """,
-        pub,
-    )
+    query = ["SELECT * FROM pbots_publication WHERE 1=1"]
+    for column in [
+        "url",
+        "number",
+        "publisher",
+        "pub_type",
+        "subject",
+        "date_start",
+        "date_end",
+        "source_id",
+    ]:
+        if pub[column] is None:
+            query.append(f"{column} IS NULL")
+        else:
+            query.append(f"{column} = :{column}")
+    cur.execute(" AND ".join(query), pub)
     return cur.fetchone()
 
 
