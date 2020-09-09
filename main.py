@@ -28,7 +28,14 @@ from typing import Any, Dict, List
 
 import jinja2
 
-import settings
+
+# Check whether the settings are in place
+try:
+    import settings
+except ModuleNotFoundError:
+    print("Please create a settings.py configuration file prior to running PBOTS.")
+    print("You may use settings.py-sample as reference.")
+    sys.exit(1)
 
 
 SOURCES = [
@@ -388,10 +395,6 @@ def run_source(source_id: int):
 
 
 if __name__ == "__main__":
-    if not os.path.exists("settings.py"):
-        print("Please create a settings.py configuration file prior to running PBOTS.")
-        print("You may use settings.py-sample as reference.")
-        sys.exit(1)
     ensure_db()
     if len(sys.argv) < 2:
         show_help()
