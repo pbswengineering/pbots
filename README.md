@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/github/license/bernarpa/pbots.svg)](https://opensource.org/licenses/AGPL-3.0)
 [![GitHub issues](https://img.shields.io/github/issues/bernarpa/pbots.svg)](https://github.com/bernarpa/pbots/issues)
 
-## Table of content
+## Table of contents
 
 - [What is PBOTS](#what-is-pbots)
 - [Usage](#usage)
