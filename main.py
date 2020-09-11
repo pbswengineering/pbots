@@ -307,11 +307,11 @@ def send_newsletter(source_id: int, title: str):
         (source_id,),
     )
     recipients = [{"name": row[0], "email": row[1]} for row in cur.fetchall()]
-    if EMAIL_USE_TLS:
+    if settings.EMAIL_USE_TLS:
         smtp = smtplib.SMTP_SSL
     else:
         smtp = smtplib.SMTP
-    with smtp(EMAIL_HOST, EMAIL_PORT) as server:
+    with smtp(settings.EMAIL_HOST, settings.EMAIL_PORT) as server:
         server.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
         message = MIMEMultipart("alternative")
         message["Subject"] = "Newsletter {}".format(title)
