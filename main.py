@@ -319,7 +319,7 @@ def send_newsletter(source_id: int, title: str):
         message["Reply-To"] = settings.EMAIL_REPLY_TO
         # Email clients will try to render the last part first
         message.attach(MIMEText(body_plaintext, "plain"))
-        with open("template/pbsw-191x32.png", "rb") as logo:
+        with open("template/pbsw-192x32.png", "rb") as logo:
             logo_mime = MIMEImage(logo.read())
         logo_mime.add_header("Content-ID", "<logo>")
         message.attach(logo_mime)
