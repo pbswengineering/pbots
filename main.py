@@ -81,6 +81,18 @@ SOURCES = [
         "varname": "matrimoni_montecastrilli",
         "scraper": "python scraper/matrimoni-comune-montecastrilli.py",
     },
+    {
+        "id": 8,
+        "name": "Albo Pretorio USR Umbria",
+        "varname": "albo_pretorio_usr_umbria",
+        "scraper": "python scraper/albopretorio-usr-umbria.py",
+    },
+    {
+        "id": 9,
+        "name": "Albo Pretorio UST Terni",
+        "varname": "albo_pretorio_ust_terni",
+        "scraper": "python scraper/albopretorio-ust-terni.py",
+    }
 ]
 
 

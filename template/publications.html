@@ -23,6 +23,9 @@ HTML body for the email used to notify new publications.
         <td>
             <p>
                 <em>{{ pub.publisher }}</em>
+                {% if pub.pub_type %}
+                <br>{{ pub.pub_type }}
+                {% endif %}
             </p>
             <p>
                 <strong>
