@@ -135,8 +135,8 @@ def ensure_db():
     Ensure that the SQLite db is in place with the required
     tables and initial data.
     """
+    logger = loggers[0]
     if not os.path.exists("pbots.db"):
-        logger = loggers[0]
         logger.info("pbots.db not found, creating default database...")
         conn = sqlite3.connect("pbots.db")
         cur = conn.cursor()
@@ -146,13 +146,6 @@ def ensure_db():
             id INTEGER PRIMARY KEY,
             last_pub_id INTEGER DEFAULT NULL);
             """
-        )
-        cur.executemany(
-            """
-            INSERT INTO pbots_source (id, last_pub_id)
-            VALUES (:id, 0);
-            """,
-            SOURCES,
         )
         cur.execute(
             """
@@ -186,15 +179,26 @@ def ensure_db():
             source_id INTEGER NOT NULL);
             """
         )
-        cur.executemany(
-            f"""
-            INSERT INTO pbots_mailinglistmember (name, email, source_id)
-            VALUES ('{settings.DEFAULT_SUBSCRIBER_NAME}', '{settings.DEFAULT_SUBSCRIBER_EMAIL}', :id);
-            """,
-            SOURCES,
-        )
         conn.commit()
         conn.close()
+    logger.info("Ensuring that all sources are present in the database and that all mailing lists have at least one subscriber...")
+    conn = sqlite3.connect("pbots.db")
+    cur = conn.cursor()
+    for source in SOURCES:
+        cur.execute("SELECT id FROM pbots_source WHERE id = :id", source)
+        if not cur.fetchone():
+            cur.execute("INSERT INTO pbots_source (id, last_pub_id) VALUES (:id, 0)", source)
+        cur.execute("SELECT source_id FROM pbots_mailinglistmember WHERE source_id = :id", source)
+        if not cur.fetchone():
+            cur.execute(
+                f"""
+                INSERT INTO pbots_mailinglistmember (name, email, source_id)
+                VALUES ('{settings.DEFAULT_SUBSCRIBER_NAME}', '{settings.DEFAULT_SUBSCRIBER_EMAIL}', :id);
+                """,
+                source,
+            )
+    conn.commit()
+    conn.close()
 
 
 def publication_exists(cur: sqlite3.Cursor, pub: Dict[str, Any]):
