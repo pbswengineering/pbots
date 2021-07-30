@@ -23,10 +23,7 @@ from bs4.element import Tag
 
 SOURCE = "Albo Pretorio USR Umbria"
 SUMMARY_URL = "https://usr.istruzione.umbria.gov.it/id.asp?CatID=Albo"
-JS_DETAIL_PATTERN = re.compile(r"visualizza_dettaglio\((\d*?)\s*,\s*(\d*)\)")
-DETAIL_URL_TEMPLATE = (
-    "https://usr.istruzione.umbria.gov.it/{}"
-)
+DETAIL_URL_TEMPLATE = "https://usr.istruzione.umbria.gov.it/{}"
 PUBLISHER = "USR Umbria"
 
 

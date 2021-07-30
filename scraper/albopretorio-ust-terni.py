@@ -23,11 +23,8 @@ from bs4.element import Tag
 
 SOURCE = "Albo Pretorio UST Terni"
 SUMMARY_URL = "https://terni.istruzione.umbria.gov.it/id.asp?CatID=Albo"
-JS_DETAIL_PATTERN = re.compile(r"visualizza_dettaglio\((\d*?)\s*,\s*(\d*)\)")
-DETAIL_URL_TEMPLATE = (
-    "https://terni.istruzione.umbria.gov.it/{}"
-)
-PUBLISHER = "USR Terni"
+DETAIL_URL_TEMPLATE = "https://terni.istruzione.umbria.gov.it/{}"
+PUBLISHER = "UST Terni"
 
 
 def date_ita_to_iso(ita: str) -> Optional[str]:
