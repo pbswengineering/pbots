@@ -23,6 +23,8 @@ from bs4.element import Tag
 
 SOURCE = "Albo Pretorio USR Lazio"
 SUMMARY_URL = "https://www.usrlazio.it/"
+DETAIL_URL_TEMPLATE = "https://www.usrlazio.it{}"
+
 PUBLISHER = "USR Lazio"
 
 
@@ -57,7 +59,7 @@ def parse_row(row: Tag) -> Optional[Dict[str, str]]:
     if author:
         publisher = f"{publisher} - {author}"
     return {
-        "url": a_title["href"],
+        "url": DETAIL_URL_TEMPLATE.format(a_title["href"]),
         "subject": a_title.get_text(),
         "source": SOURCE,
         "publisher": publisher,
