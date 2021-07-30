@@ -115,9 +115,11 @@ scrapers periodically. For example:
 # Matrimoni del comune di Montecastrilli
 30 10 * * * /home/rnd/github/pbots/run.sh 7
 # USR Umbria
-25 * * * * /home/rnd/github/pbots/run.sh 8
+35 * * * * /home/rnd/github/pbots/run.sh 8
 # UST Terni
-35 * * * * /home/rnd/github/pbots/run.sh 9
+25 * * * * /home/rnd/github/pbots/run.sh 9
+# USR Lazio
+15 * * * * /home/rnd/github/pbots/run.sh 10
 ```
 
 ## License

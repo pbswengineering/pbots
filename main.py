@@ -92,7 +92,13 @@ SOURCES = [
         "name": "Albo Pretorio UST Terni",
         "varname": "albo_pretorio_ust_terni",
         "scraper": "python scraper/albopretorio-ust-terni.py",
-    }
+    },
+    {
+        "id": 10,
+        "name": "Albo Pretorio USR Lazio",
+        "varname": "albo_pretorio_usr_lazio",
+        "scraper": "python scraper/albopretorio-usr-lazio.py",
+    },
 ]
 
 
@@ -181,14 +187,21 @@ def ensure_db():
         )
         conn.commit()
         conn.close()
-    logger.info("Ensuring that all sources are present in the database and that all mailing lists have at least one subscriber...")
+    logger.info(
+        "Ensuring that all sources are present in the database and that all mailing lists have at least one subscriber..."
+    )
     conn = sqlite3.connect("pbots.db")
     cur = conn.cursor()
     for source in SOURCES:
         cur.execute("SELECT id FROM pbots_source WHERE id = :id", source)
         if not cur.fetchone():
-            cur.execute("INSERT INTO pbots_source (id, last_pub_id) VALUES (:id, 0)", source)
-        cur.execute("SELECT source_id FROM pbots_mailinglistmember WHERE source_id = :id", source)
+            cur.execute(
+                "INSERT INTO pbots_source (id, last_pub_id) VALUES (:id, 0)", source
+            )
+        cur.execute(
+            "SELECT source_id FROM pbots_mailinglistmember WHERE source_id = :id",
+            source,
+        )
         if not cur.fetchone():
             cur.execute(
                 f"""

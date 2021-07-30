@@ -49,14 +49,16 @@ def parse_detail(url_detail: str) -> Dict[str, str]:
     """
     detail_page = requests.get(url_detail, allow_redirects=True)
     soup = BeautifulSoup(detail_page.content, "html.parser")
-    number = url_detail[url_detail.rfind("=") + 1:]  # Assume the DB ID as publication number
+    number = url_detail[
+        url_detail.rfind("=") + 1 :
+    ]  # Assume the DB ID as publication number
     pub: Dict[str, Any]
     pub = {
         "url": url_detail,
         "source": SOURCE,
         "number": number,
         "publisher": PUBLISHER,
-        "attachments": []
+        "attachments": [],
     }
     table = soup.find("table")
     table_text = table.get_text()
