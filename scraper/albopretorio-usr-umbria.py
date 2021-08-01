@@ -61,6 +61,8 @@ def parse_detail(url_detail: str) -> Dict[str, str]:
         "attachments": [],
     }
     table = soup.find("table")
+    if not table:
+        return None
     table_text = table.get_text()
     table_dates = re.findall(r"\d{2}/\d{2}/\d{4}", table_text)
     if table_dates:
