@@ -2,18 +2,17 @@
 # -*- coding: utf-8 -*-
 
 """
-albopretorio-comune-montecastrilli
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+albopretorio-usr-lazio
+~~~~~~~~~~~~~~~~~~~~~~
 
-Scraper for the register of the "Comune di Montecastrilli".
+Scraper for the register of the "USR Lazio".
 
-:copyright: (c) 2020 Paolo Paolo Bernardi.
+:copyright: (c) 2021 Paolo Paolo Bernardi.
 :license: GNU AGPL version 3, see LICENSE for more details.
 """
 
 import json
-import re
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 import requests
 
@@ -63,9 +62,9 @@ def parse_row(row: Tag) -> Optional[Dict[str, str]]:
         "subject": a_title.get_text(),
         "source": SOURCE,
         "publisher": publisher,
-        "date_start": pub_date,
+        "date_start": pub_date,  # type: ignore
         "number": pub_num,
-        "attachments": [],
+        "attachments": [],  # type: ignore
     }
 
 

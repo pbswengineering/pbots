@@ -21,7 +21,7 @@ import os
 import shlex
 import smtplib
 import sqlite3
-import ssl
+import ssl  # noqa
 import subprocess
 import sys
 from typing import Any, Dict, List
@@ -99,6 +99,12 @@ SOURCES = [
         "varname": "albo_pretorio_usr_lazio",
         "scraper": "python scraper/albopretorio-usr-lazio.py",
     },
+    {
+        "id": 11,
+        "name": "Albo Pretorio IIS Casagrande-Cesi",
+        "varname": "albo_pretorio_iis_casagrandecesi",
+        "scraper": "python scraper/albopretorio-iis-casagrandecesi.py",
+    }
 ]
 
 
@@ -133,7 +139,7 @@ def show_help():
     print("usage: run.sh SOURCE_ID")
     print("\nThe following sources are supported:")
     for source in SOURCES:
-        print(f"   {source['id']}: {source['name']}")
+        print(f"   {source['id']:2}: {source['name']}")
 
 
 def ensure_db():
@@ -339,7 +345,7 @@ def send_newsletter(source_id: int, title: str):
     if settings.EMAIL_USE_TLS:
         smtp = smtplib.SMTP_SSL
     else:
-        smtp = smtplib.SMTP
+        smtp = smtplib.SMTP  # type: ignore
     with smtp(settings.EMAIL_HOST, settings.EMAIL_PORT) as server:
         server.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
         message = MIMEMultipart("alternative")
