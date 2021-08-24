@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-albopretorio-iis-casagrandecesi
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+amministrazionetrasparente-iis-casagrandecesi
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Scraper for the register of the "IIS Casagrande-Cesi".
+Scraper for the administrative register of the "IIS Casagrande-Cesi".
 
 :copyright: (c) 2021 Paolo Paolo Bernardi.
 :license: GNU AGPL version 3, see LICENSE for more details.
@@ -20,8 +20,8 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 
 
-SOURCE = "Albo Pretorio IIS Casagrande-Cesi"
-SUMMARY_URL = "https://www.casagrandecesi.edu.it/albo-online"
+SOURCE = "Amministrazione Trasparente IIS Casagrande-Cesi"
+SUMMARY_URL = "https://www.casagrandecesi.edu.it/amministrazione-trasparente"
 MEDIA_URL = "https://www.casagrandecesi.edu.it/sdg/app/default/view_documento.php?a={}&id_documento={}&sede_codice={}"
 
 PUBLISHER = "IIS Casagrande-Cesi"

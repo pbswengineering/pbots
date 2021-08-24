@@ -119,13 +119,15 @@ scrapers periodically. For example:
 # Matrimoni del comune di Montecastrilli
 30 10 * * * /home/rnd/github/pbots/run.sh 7
 # USR Umbria
-35 19 * * * /home/rnd/github/pbots/run.sh 8
+35 */2 * * * /home/rnd/github/pbots/run.sh 8
 # UST Terni
-25 19 * * * /home/rnd/github/pbots/run.sh 9
+25 */2 * * * /home/rnd/github/pbots/run.sh 9
 # USR Lazio
-15 19 * * * /home/rnd/github/pbots/run.sh 10
-# IIS Casagrande-cesi
-20 * * * * /home/rnd/github/pbots/run.sh 11
+15 */2 * * * /home/rnd/github/pbots/run.sh 10
+# Albo Pretorio IIS Casagrande-cesi
+27 * * * * /home/rnd/github/pbots/run.sh 11
+# Amministrazione Trasparente IIS Casagrande-cesi
+37 * * * * /home/rnd/github/pbots/run.sh 12
 ```
 
 ## License

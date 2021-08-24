@@ -104,7 +104,13 @@ SOURCES = [
         "name": "Albo Pretorio IIS Casagrande-Cesi",
         "varname": "albo_pretorio_iis_casagrandecesi",
         "scraper": "python scraper/albopretorio-iis-casagrandecesi.py",
-    }
+    },
+    {
+        "id": 12,
+        "name": "Amministrazione Trasparente IIS Casagrande-Cesi",
+        "varname": "amministrazione_trasparente_iis_casagrandecesi",
+        "scraper": "python scraper/amministrazionetrasparente-iis-casagrandecesi.py",
+    },
 ]
 
 
