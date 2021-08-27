@@ -128,6 +128,8 @@ scrapers periodically. For example:
 27 * * * * /home/rnd/github/pbots/run.sh 11
 # Amministrazione Trasparente IIS Casagrande-cesi
 37 * * * * /home/rnd/github/pbots/run.sh 12
+# Notizie IIS Casagrande-cesi
+47 * * * * /home/rnd/github/pbots/run.sh 13
 ```
 
 ## License

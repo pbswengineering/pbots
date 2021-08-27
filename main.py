@@ -111,6 +111,12 @@ SOURCES = [
         "varname": "amministrazione_trasparente_iis_casagrandecesi",
         "scraper": "python scraper/amministrazionetrasparente-iis-casagrandecesi.py",
     },
+    {
+        "id": 13,
+        "name": "Notizie IIS Casagrande-Cesi",
+        "varname": "notizie_iis_casagrandecesi",
+        "scraper": "python scraper/notizie-iis-casagrandecesi.py",
+    },
 ]
 
 
