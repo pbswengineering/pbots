@@ -12,13 +12,15 @@ Scraper for the register of the "USR Terni".
 """
 
 import json
+import os
 import re
-from typing import Any, Dict, List, Optional
+import sys
+from typing import Any, Dict, List
 
-import requests
-
-from bs4 import BeautifulSoup
 from bs4.element import Tag
+
+sys.path.append(os.path.join(os.path.dirname(__file__)))
+from shared import date_ita_to_iso, download_soup  # noqa
 
 
 SOURCE = "Albo Pretorio UST Terni"
@@ -27,28 +29,13 @@ DETAIL_URL_TEMPLATE = "https://terni.istruzione.umbria.gov.it/{}"
 PUBLISHER = "UST Terni"
 
 
-def date_ita_to_iso(ita: str) -> Optional[str]:
-    """
-    Convert an Italian date to the ISO format
-    :param ita: date in Italian format (e.g. 31/12/2018 or 31-12-2018)
-    :return: the date in ISO format (e.g. 2018-12-31)
-    """
-    if len(ita) != 10:
-        return None
-    year = int(ita[6:])
-    month = int(ita[3:5])
-    day = int(ita[:2])
-    return "{:04d}-{:02d}-{:02d}".format(year, month, day)
-
-
 def parse_detail(url_detail: str) -> Dict[str, str]:
     """
     Parse the detail page of a publication.
     :param url_detail: URL of the publication's detail page
     :return: a dict with the publication details
     """
-    detail_page = requests.get(url_detail, allow_redirects=True)
-    soup = BeautifulSoup(detail_page.content, "html.parser")
+    soup = download_soup(url_detail)
     number = url_detail[
         url_detail.rfind("=") + 1 :
     ]  # Assume the DB ID as publication number
@@ -95,8 +82,7 @@ def scrape() -> List[Dict[str, str]]:
     Scrape the register.
     :return: a list of dictionaries of the current publications
     """
-    summary_page = requests.get(SUMMARY_URL, allow_redirects=True)
-    soup = BeautifulSoup(summary_page.content, "html.parser")
+    soup = download_soup(SUMMARY_URL)
     rows = soup.find_all("li", {"class": "li_out"})
     pubs = []
     for row in rows:

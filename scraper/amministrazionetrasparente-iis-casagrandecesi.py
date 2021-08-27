@@ -12,12 +12,14 @@ Scraper for the administrative register of the "IIS Casagrande-Cesi".
 """
 
 import json
+import os
+import sys
 from typing import Dict, List, Optional
 
-import requests
-
-from bs4 import BeautifulSoup
 from bs4.element import Tag
+
+sys.path.append(os.path.join(os.path.dirname(__file__)))
+from shared import date_ita_to_iso, download_soup  # noqa
 
 
 SOURCE = "Amministrazione Trasparente IIS Casagrande-Cesi"
@@ -25,20 +27,6 @@ SUMMARY_URL = "https://www.casagrandecesi.edu.it/amministrazione-trasparente"
 MEDIA_URL = "https://www.casagrandecesi.edu.it/sdg/app/default/view_documento.php?a={}&id_documento={}&sede_codice={}"
 
 PUBLISHER = "IIS Casagrande-Cesi"
-
-
-def date_ita_to_iso(ita: str) -> Optional[str]:
-    """
-    Convert an Italian date to the ISO format
-    :param ita: date in Italian format (e.g. 31/12/2018 or 31-12-2018)
-    :return: the date in ISO format (e.g. 2018-12-31)
-    """
-    if len(ita) != 10:
-        return None
-    year = int(ita[6:])
-    month = int(ita[3:5])
-    day = int(ita[:2])
-    return "{:04d}-{:02d}-{:02d}".format(year, month, day)
 
 
 def parse_row(row: Tag) -> Optional[Dict[str, str]]:
@@ -93,14 +81,7 @@ def scrape() -> List[Dict[str, str]]:
     Scrape the register.
     :return: a list of dictionaries of the current publications
     """
-    summary_page = requests.get(
-        SUMMARY_URL,
-        allow_redirects=True,
-        headers={
-            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:90.0) Gecko/20100101 Firefox/90.0"
-        },
-    )
-    soup = BeautifulSoup(summary_page.content, "html.parser")
+    soup = download_soup(SUMMARY_URL)
     rows = soup.find_all("div", {"class": "media at-item"})
     pubs = []
     for row in rows:

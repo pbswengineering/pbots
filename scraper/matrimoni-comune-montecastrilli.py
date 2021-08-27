@@ -12,13 +12,15 @@ Scraper for the wedding register of the "Comune di Montecastrilli".
 """
 
 import json
+import os
 import re
+import sys
 from typing import Any, Dict, List, Optional
 
-import requests
-
-from bs4 import BeautifulSoup
 from bs4.element import Tag
+
+sys.path.append(os.path.join(os.path.dirname(__file__)))
+from shared import date_ita_to_iso, download_soup  # noqa
 
 
 SOURCE = "Matrimoni del Comune di Montecastrilli"
@@ -32,28 +34,13 @@ JS_DOCUMENT_PATTERN = re.compile("window.open\\('(.*?)'\\)")
 DOCUMENT_URL_TEMPLATE = "http://halleyweb.com/c055017/mc/{}"
 
 
-def date_ita_to_iso(ita: str) -> Optional[str]:
-    """
-    Convert an Italian date to the ISO format
-    :param ita: date in Italian format (e.g. 31/12/2018 or 31-12-2018)
-    :return: the date in ISO format (e.g. 2018-12-31)
-    """
-    if len(ita) != 10:
-        return None
-    year = int(ita[6:])
-    month = int(ita[3:5])
-    day = int(ita[:2])
-    return "{:04d}-{:02d}-{:02d}".format(year, month, day)
-
-
 def parse_detail(url_detail: str) -> Dict[str, str]:
     """
     Parse the detail page of a publication.
     :param url_detail: URL of the publication's detail page
     :return: a dict with the publication details
     """
-    detail_page = requests.get(url_detail, allow_redirects=True)
-    soup = BeautifulSoup(detail_page.content, "html.parser")
+    soup = download_soup(url_detail)
     trs = soup.find_all("tr")
     pub: Dict[str, Any]
     pub = {
@@ -111,8 +98,7 @@ def scrape() -> List[Dict[str, str]]:
     Scrape the register.
     :return: a list of dictionaries of the current publications
     """
-    summary_page = requests.get(SUMMARY_URL, allow_redirects=True)
-    soup = BeautifulSoup(summary_page.content, "html.parser")
+    soup = download_soup(SUMMARY_URL)
     rows = soup.find_all("row")
     pubs = []
     for row in rows:
