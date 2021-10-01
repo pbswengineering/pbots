@@ -95,5 +95,5 @@ def download_soup(url: str) -> BeautifulSoup:
     :param url: the web page URL
     :return: a BeautifulSoup object that represents the requested web page
     """
-    page = requests.get(url, allow_redirects=True, headers={"User-Agent": random_ua()},)
+    page = requests.get(url, allow_redirects=True, headers={"User-Agent": random_ua()}, verify=False)
     return BeautifulSoup(page.content, "html.parser")
