@@ -130,6 +130,8 @@ scrapers periodically. For example:
 37 * * * * /home/rnd/github/pbots/run.sh 12
 # Notizie IIS Casagrande-cesi
 47 * * * * /home/rnd/github/pbots/run.sh 13
+# Notizie DD Mazzini
+51 * * * * /home/rnd/github/pbots/run.sh 14
 ```
 
 ## License
