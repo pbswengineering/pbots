@@ -117,6 +117,12 @@ SOURCES = [
         "varname": "notizie_iis_casagrandecesi",
         "scraper": "python scraper/notizie-iis-casagrandecesi.py",
     },
+    {
+        "id": 14,
+        "name": "Notizie DD Mazzini",
+        "varname": "notizie_dd_mazzini",
+        "scraper": "python scraper/notizie-dd-mazzini.py",
+    },
 ]
 
 

@@ -59,7 +59,7 @@ def date_ita_text_to_iso(ita: str) -> Optional[str]:
     if len(v) != 3:
         return None
     try:
-        month = MONTHS_ITA.index(v[1]) + 1
+        month = MONTHS_ITA.index(v[1].lower()) + 1
     except ValueError:
         return None
     year = int(v[2])
