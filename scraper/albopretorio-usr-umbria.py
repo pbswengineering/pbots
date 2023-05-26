@@ -44,6 +44,8 @@ def parse_detail(url_detail: str) -> Dict[str, str]:
         "attachments": [],
     }
     titolo_sezione = soup.find("div", {"class": "titolo-sezione"})
+    if not titolo_sezione:
+        return None
     titolo = titolo_sezione.find("h2")
     pub["subject"] = titolo.get_text()
     data_articolo = soup.find("p", {"class": "data-articolo"})
@@ -76,6 +78,8 @@ def scrape() -> List[Dict[str, str]]:
             rows = container_row.find_all("div", {"class": "rt-grid-item"})
             for row in rows:
                 pub = parse_row(row)
+                if not pub:
+                    continue
                 pub["number"] = row["data-id"]
                 if pub:
                     pubs.append(pub)
