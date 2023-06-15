@@ -43,14 +43,16 @@ def parse_detail(url_detail: str) -> Dict[str, str]:
         "publisher": PUBLISHER,
         "attachments": [],
     }
-    titolo_sezione = soup.find("div", {"class": "titolo-sezione"})
-    if not titolo_sezione:
-        return None
-    titolo = titolo_sezione.find("h2")
+    titolo = soup.find("h1", {"class": "otw_post_content-blog-title"})
     pub["subject"] = titolo.get_text()
-    data_articolo = soup.find("p", {"class": "data-articolo"})
-    date_str = data_articolo.find("strong").get_text()
-    pub["date_start"] = date_ita_text_to_iso(date_str)
+    date_str = None
+    for a in soup.find_all("a"):
+        try:
+            date_str = a["data-date"]
+            break
+        except:
+            pass
+    pub["date_start"] = date_str
     return pub
 
 
@@ -71,17 +73,18 @@ def scrape() -> List[Dict[str, str]]:
     :return: a list of dictionaries of the current publications
     """
     pubs = []
-    soup = download_soup(SUMMARY_URL)
-    container_rows = soup.find_all("div", {"class": "rt-content-loader"})
-    for container_row in container_rows:
-        rows = container_row.find_all("div", {"class": "rt-grid-item"})
-        for row in rows:
-            pub = parse_row(row)
-            if not pub:
-                continue
-            pub["number"] = row["data-id"]
-            if pub:
-                pubs.append(pub)
+    for i in range(1, 4):
+        soup = download_soup(SUMMARY_URL.format(i))
+        container_rows = soup.find_all("div", {"class": "rt-content-loader"})
+        for container_row in container_rows:
+            rows = container_row.find_all("div", {"class": "rt-grid-item"})
+            for row in rows:
+                pub = parse_row(row)
+                if not pub:
+                    continue
+                pub["number"] = row["data-id"]
+                if pub:
+                    pubs.append(pub)
     return pubs
 
 

@@ -43,14 +43,16 @@ def parse_detail(url_detail: str) -> Dict[str, str]:
         "publisher": PUBLISHER,
         "attachments": [],
     }
-    titolo_sezione = soup.find("div", {"class": "titolo-sezione"})
-    if not titolo_sezione:
-        return None
-    titolo = titolo_sezione.find("h2")
+    titolo = soup.find("h1", {"class": "otw_post_content-blog-title"})
     pub["subject"] = titolo.get_text()
-    data_articolo = soup.find("p", {"class": "data-articolo"})
-    date_str = data_articolo.find("strong").get_text()
-    pub["date_start"] = date_ita_text_to_iso(date_str)
+    date_str = None
+    for a in soup.find_all("a"):
+        try:
+            date_str = a["data-date"]
+            break
+        except:
+            pass
+    pub["date_start"] = date_str
     return pub
 
 
