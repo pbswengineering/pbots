@@ -11,6 +11,9 @@ Scraper for the administrative register of the "IIS Casagrande-Cesi".
 :license: GNU AGPL version 3, see LICENSE for more details.
 """
 
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 import json
 import os
 import sys
@@ -55,9 +58,11 @@ def parse_row(row: Tag) -> Optional[Dict[str, str]]:
     if media_right:
         a = media_right.find("a")
         if a:
+            print(a)
             pub["attachments"].append(
                 {
-                    "url": MEDIA_URL.format(a["data-dl"], a["data-doc"], a["data-cli"]),
+                    # MEDIA_URL.format(a["data-dl"], a["data-doc"], a["data-cli"])
+                    "url": a["href"],
                     "name": "Documento.pdf",
                 }
             )
@@ -69,7 +74,8 @@ def parse_row(row: Tag) -> Optional[Dict[str, str]]:
             name = text and text.get_text() or f"attachment-{i:02}"
             pub["attachments"].append(
                 {
-                    "url": MEDIA_URL.format(a["data-dl"], a["data-doc"], a["data-cli"]),
+                    # MEDIA_URL.format(a["data-dl"], a["data-doc"], a["data-cli"])
+                    "url": a["href"],
                     "name": name,
                 }
             )
