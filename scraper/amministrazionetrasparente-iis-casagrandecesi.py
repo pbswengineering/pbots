@@ -58,7 +58,6 @@ def parse_row(row: Tag) -> Optional[Dict[str, str]]:
     if media_right:
         a = media_right.find("a")
         if a:
-            print(a)
             pub["attachments"].append(
                 {
                     # MEDIA_URL.format(a["data-dl"], a["data-doc"], a["data-cli"])
