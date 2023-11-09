@@ -64,6 +64,8 @@ def parse_row(row: Tag) -> Dict[str, str]:
     """
     a_list = row.find_all("a")
     url_detail = a_list[0]["href"]
+    if "bit.ly" in url_detail:
+        return None
     return parse_detail(url_detail)
 
 
