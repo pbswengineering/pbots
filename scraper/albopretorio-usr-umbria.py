@@ -44,6 +44,8 @@ def parse_detail(url_detail: str) -> Dict[str, str]:
         "attachments": [],
     }
     titolo = soup.find("h1", {"class": "otw_post_content-blog-title"})
+    if not titolo:
+        return None
     pub["subject"] = titolo.get_text()
     date_str = None
     for a in soup.find_all("a"):
