@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-ANACONDA="$HOME/anaconda3/bin/python"
-if [ -f "$ANACONDA" ]; then
-    PYTHON="$ANACONDA"
+VENV="$HOME/.virtualenvs/pbots/bin/python"
+if [ -f "$VENV" ]; then
+    echo "Using virtualenv"
+    PYTHON="$VENV"
 else
+    echo "Using default interpreter"
     PYTHON='python3'
 fi
 cd -P -- "$(dirname -- "$0")"

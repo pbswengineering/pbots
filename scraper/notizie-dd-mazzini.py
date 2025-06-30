@@ -24,7 +24,7 @@ from shared import date_ita_text_to_iso, download_soup  # noqa
 
 
 SOURCE = "Notizie DD Mazzini"
-SUMMARY_URL = "https://ddmazziniterni.edu.it/"
+SUMMARY_URL = "https://ddmazziniterni.edu.it/tipologia-articolo/notizie/"
 
 PUBLISHER = "DD Mazzini"
 PUB_TYPE = "News"
@@ -36,17 +36,13 @@ def parse_row(row: Tag) -> Optional[Dict[str, str]]:
     :param row: a row of the table of publications
     :return: a dict with the publication details or None if the parsing failed
     """
-    h3_title = row.find("h3", {"class": "header-titolo-articolo"})
-    try:
-        a_title = h3_title.find("a")
-        title = a_title.get_text().strip()
-        url = a_title.attrs["href"]
-    except Exception:
-        return None
+    title = row.find("h2").get_text().strip()
+    url = row.attrs["href"]  # Here "row" is an "a"
     pub_num = sha256(url.encode("utf-8")).hexdigest()
-    pub_date = date_ita_text_to_iso(
-        row.find("span", {"class": "dataArticolo"}).get_text().strip()
-    )
+    year = row.find("span", {"class": "year"}).get_text().strip()
+    month_str = row.find("span", {"class": "month"}).get_text().strip()
+    day = row.find("span", {"class": "day"}).get_text().strip()
+    pub_date = date_ita_text_to_iso(f"{day} {month_str} {year}")
     pub = {
         "url": url,
         "subject": title,
@@ -66,10 +62,7 @@ def scrape() -> List[Dict[str, str]]:
     :return: a list of dictionaries of the current publications
     """
     soup = download_soup(SUMMARY_URL)
-    all_news = soup.find_all("section", {"class": "articoli_categoria_principale"})
-    rows = []
-    for news_row in all_news:
-        rows.extend(news_row.find_all("article"))
+    rows = soup.find_all("a", {"class": "presentation-card-link"})
     pubs = []
     for row in rows:
         pub = parse_row(row)

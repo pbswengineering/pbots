@@ -13,6 +13,8 @@ Functions shared among the scrapers.
 
 import random
 from typing import Optional
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 import requests
 
@@ -34,6 +36,8 @@ MONTHS_ITA = [
     "dicembre",
 ]
 
+MONTHS3_ITA = [m[:3] for m in MONTHS_ITA]
+
 
 def date_ita_to_iso(ita: str) -> Optional[str]:
     """
@@ -52,16 +56,19 @@ def date_ita_to_iso(ita: str) -> Optional[str]:
 def date_ita_text_to_iso(ita: str) -> Optional[str]:
     """
     Convert an Italian date to the ISO format
-    :param ita: date in Italian format (e.g. 31 dicembre 2018)
+    :param ita: date in Italian format (e.g. 31 dicembre 2018, 31 dic 2018)
     :return: the date in ISO format (e.g. 2018-12-31)
     """
-    v = ita.split(" ")
+    v = ita.lower().split(" ")
     if len(v) != 3:
         return None
     try:
         month = MONTHS_ITA.index(v[1].lower()) + 1
     except ValueError:
-        return None
+        try:
+            month = MONTHS3_ITA.index(v[1].lower()) + 1
+        except ValueError:
+            return
     year = int(v[2])
     day = int(v[0])
     return "{:04d}-{:02d}-{:02d}".format(year, month, day)
