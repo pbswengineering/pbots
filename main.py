@@ -43,7 +43,7 @@ SOURCES = [
         "id": 1,
         "name": "Albo Pretorio del Comune di Acquasparta",
         "varname": "albo_pretorio_acquasparta",
-        "scraper": f"{settings.CASPERJS} scraper/albopretorio-comune-acquasparta.js",
+        "scraper": "python scraper/albopretorio-comune-acquasparta.py",
     },
     {
         "id": 2,
