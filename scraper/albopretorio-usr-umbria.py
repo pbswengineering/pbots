@@ -43,7 +43,7 @@ def parse_detail(url_detail: str) -> Dict[str, str]:
         "publisher": PUBLISHER,
         "attachments": [],
     }
-    titolo = soup.find("h1", {"class": "otw_post_content-blog-title"})
+    titolo = soup.find("h2")
     if not titolo:
         return None
     pub["subject"] = titolo.get_text()
