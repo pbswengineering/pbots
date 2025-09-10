@@ -43,9 +43,10 @@ def parse_detail(url_detail: str) -> Dict[str, str]:
         "publisher": PUBLISHER,
         "attachments": [],
     }
-    titolo = soup.find("h2")
-    if not titolo:
+    titoli = soup.find_all("h2")
+    if not titoli:
         return None
+    titolo = titoli[-1]
     pub["subject"] = titolo.get_text()
     date_str = None
     for a in soup.find_all("a"):
