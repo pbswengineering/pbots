@@ -347,7 +347,7 @@ def send_newsletter(source_id: int, title: str):
         "publications": publications,
     }
     env = jinja2.Environment(
-        loader=jinja2.PackageLoader("__main__", "template"),
+        loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), "template")),
         autoescape=jinja2.select_autoescape(["html", "xml"]),
     )
     template_plaintext = env.get_template("publications.txt")
